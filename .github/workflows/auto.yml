@@ -1,0 +1,21 @@
+name: Auto approve
+
+on: pull_request_target
+
+jobs:
+  auto-approve:
+    runs-on: ubuntu-latest
+    if: github.actor == 'renovate[bot]'
+    steps:
+      - name: Check PR title for major updates
+        id: check-title
+        run: |
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          echo "PR title: $PR_TITLE"
+
+          if [[ "$PR_TITLE" == *"🔥"* ]]; then
+            echo "should-approve=false" >> $GITHUB_OUTPUT
+          else
+            echo "should-approve=true" >> $GITHUB_OUTPUT
+          fi
+
